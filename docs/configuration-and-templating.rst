@@ -1,69 +1,63 @@
-[Part 1] - Symfony2 Configuration and Templating
-================================================
+[Часть 1] - Настройка Symfony2 и шаблонизация
+=============================================
 
-Overview
---------
+Обзор
+-----
 
-This chapter will cover the first steps when creating a Symfony2 website.
-We will download and configure the Symfony2
-`Standard Distribution <http://symfony.com/doc/current/glossary.html#term-distribution>`_,
-create the Blog bundle and put together the main HTML templates. At the end
-of this chapter you will have configured a Symfony2 website that
-will be available via a local domain, eg ``http://symblog.dev/``. The website will
-contain the main HTML structure of the blog along with some dummy content.
+Эта часть охватывает первые шаги разработки сайтов на Symfony2. Мы скачаем и установим
+`стандартную редакцию <http://symfony.com/doc/current/glossary.html#term-distribution>`_
+(Standard Distribution) Symfony2, создадим пакет (bundle) и соберем основные части HTML
+шаблона. К концу раздела у вас получится сконфигурированный сайт привязанный к локальному
+домену, например, ``http://symblog.dev/``. Зададим основную структуру страниц и заполним
+и заполним их какими-нибудь данными.
 
-The following areas will be demonstrated in this chapter:
+Ниже мы рассмотрим такие моменты:
 
-    1. Setting up a Symfony2 application
-    2. Configuring a development domain
-    3. Symfony2 Bundles
-    4. Routing
-    5. Controllers
-    6. Templating with Twig
+    1. Установка Symfony2
+    2. Настройка локального домена
+    3. Пакеты
+    4. Маршрутизация
+    5. Контроллеры
+    6. Шаблонизация с использованием Twig
 
-Download and Setup
-------------------
+Загрузка и установка
+--------------------
 
-As stated above we will be using the Symfony2 Standard Distribution. This
-distribution comes complete with the Symfony2 core libraries and the most common
-bundles required to create websites. You can
-`Download <http://symfony.com/download>`_ the Symfony2 package from the Symfony2 website.
-As I don't want to repeat the excellent documentation provided by the Symfony2 book,
-please refer to the
-`Installing and Configuring Symfony2 <http://symfony.com/doc/current/book/installation.html>`_
-chapter for detailed requirements. This will guide you through the process of
-which package to download, how to install the required vendors, and how to
-correctly permission folders.
+Как уже было сказано выше, мы будем использовать стандартную редакцию Symfony2. Она
+включает в себя библиотеки ядра и основные пакеты, необходимые для создания
+сайтов. Вы можете `скачать <http://symfony.com/download>`_ её с сайта Symfony2. Поскольку
+мне не хочется повторять отлично написанную документацию из `книги <http://symfony.com/doc/current/book/index.html>`_
+по Symfony2, пожалуйста, обратитесь к разделу `Установка и настройка Symfony2 (англ.) <http://symfony.com/doc/current/book/installation.html>`_
+за подробностями. Там рассказывается о том, какой пакет скачивать, как устанавливать
+требуемые сторонние библиотеки и какие права выставлять на директории.
 
 .. warning::
 
-    It is important to pay special attention to the
-    `Setting up Permissions <http://symfony.com/doc/current/book/installation.html#configuration-and-setup>`_
-    section in the Installation chapter. This explains the various ways you
-    should permission the ``app/cache`` and ``app/logs`` folders so the web
-    server user and command line user have write access to them.
+    Уделите особое внимание секции `Устанавливаем права доступа (англ.) <http://symfony.com/doc/current/book/installation.html#configuration-and-setup>`_,
+    где объясняются разные способы установки прав на ``app/cache`` и ``app/logs``, чтобы
+    пользователь веб-сервера и пользователь командной строки могли получить к ним доступ
+    на записаь.
 
-Creating a Development Domain
------------------------------
+Настройка локального домена
+---------------------------
 
-For the purpose of this tutorial we will be using the local domain
-``http://symblog.dev/``, however you can choose any domain you want. These
-instructions are specific to `Apache <http://httpd.apache.org/>`_ and assume you
-already have Apache setup and running on your machine. If you are comfortable
-with setting up local domains, or use a different web server such as
-`nginx <http://nginx.net/>`_ you can skip this section.
+Под этот учебный проект мы создадим локальный домен ``http://symblog.dev/``, но вы
+можете придумать что-то другое. Инструкции будут приведены для `Apache <http://httpd.apache.org/>`_
+и рассчитаны на то, что вы знакомы с запуском и настройкой Apache на своей машине.
+Если вы хорошо разбираетесь в настройке локальных доменов или используете другой
+веб-сервер, вроде `nginx <http://nginx.net/>`_ — пропускайте эту часть.
 
 .. note::
 
-    These steps were performed on the Linux distribution Fedora so
-    path names, etc, may differ depending on your Operating System.
+    Следующие действия были выполнены в Linux дистрибутиве Fedora,
+    поэтому пути и тому подобное могут отличаться в зависимости от
+    вашей операционной системы.
 
-Lets begin by creating a virtual host with Apache. Locate the Apache configuration
-file and append the following settings, making sure to change the ``DocumentRoot``
-and ``Directory`` paths accordingly. The location and name of
-the Apache configuration can vary a lot depending on your OS. In Fedora
-its located at ``/etc/httpd/conf/httpd.conf``. You will need to edit this file with
-``sudo`` privileges.
+Начнем с создания виртуального хоста в Apache. Найдите его конфигурационный файл и
+добавьте следующие параметры, не забыв изменить указать ``DocumentRoot`` и ``Directory``.
+Путь к конфигурационному файлу Apache и его название может отличаться от системы к
+системе. В Fedora он находится по адресу ``/etc/httpd/conf/httpd.conf``. Редактировать
+этот файл необходимо с привилегиями ``sudo``.
 
 .. code-block:: text
 
@@ -81,17 +75,16 @@ its located at ``/etc/httpd/conf/httpd.conf``. You will need to edit this file w
       </Directory>
     </VirtualHost>
 
-
-Next add a new domain to the bottom of the host file located at ``/etc/hosts``.
-Again, you will need to edit this file with ``sudo`` privileges.
+Теперь добавьте новый домен в конец файла с хостами  ``/etc/hosts``.
+Опять же, необходимы привилегии ``sudo``.
 
 .. code-block:: text
 
     # /etc/hosts
     127.0.0.1     symblog.dev
 
-Lastly don't forget to restart the Apache service. This will reload the
-updated configuration settings we have made.
+Наконец, не забудьте перезагрузить сервис Apache. Это применит изменения
+конфигурации, которые мы сделали.
 
 .. code-block:: bash
 
@@ -99,105 +92,99 @@ updated configuration settings we have made.
 
 .. tip::
 
-    If you find yourself creating virtual domains all the time, you can simplify
-    this process by using
-    `Dynamic virtual hosts <http://blog.dsyph3r.com/2010/11/apache-dynamic-virtual-hosts.html>`_.
+    Если вам постоянно приходится создавать новые локальные домены, можете упростить
+    эту задачу используя `Динамические виртуальные хосты <http://blog.dsyph3r.com/2010/11/apache-dynamic-virtual-hosts.html>`_.
 
-You should now be able to visit ``http://symblog.dev/app_dev.php/``.
+К этому моменту, у вас должна начать работать страница ``http://symblog.dev/app_dev.php/``.
 
 .. image:: /_static/images/part_1/welcome.jpg
     :align: center
-    :alt: Symfony2 welcome page
+    :alt: Страница приветствия Symfony2
 
-If this is your first visit to the Symfony2 welcome page, take some time to view
-the demo pages. Each demo page provides code snippets that demonstrate how each
-page works behind the scenes.
+Если вы впервые попали на страницу приветствия Symfony2, осмотритесь, походите по
+демо-страницам. На каждой из этих страниц можно найти кусочки кода (snippet),
+демонстрирующие как каждая страница работает изнутри.
 
 .. note::
 
-    You will also notice a toolbar at the bottom of the welcome screen. This
-    is the developer toolbar and provides you will invaluable information
-    about the state of the application. Information including the page execution time,
-    memory usage, database queries, authentication state and much more
-    can be viewed from this toolbar. By default the toolbar is only visible when
-    running in the ``dev`` environment, as providing the toolbar in production
-    would be a big security risk as it exposes a lot of the internals of your
-    application. References to the toolbar will be made through this tutorial
-    as we introduce new features.
+    Вы могли заметить панель инструментов внизу экрана приветствия. Она предоставляет
+    разработчику бесценную информацию о состоянии приложения, которая включает в себя
+    время выполнения, потребление памяти, запросы к БД, состояние авторизации и еще
+    много чего полезного. По-умолчанию, эта панель видна только при работе из ``dev``
+    окружения, т.к. в рабочей (production) среде она будет представлять собой большой
+    угорзу безопасности раскрывая множество внутренних данных. Мы еще будем ссылаться
+    к этой панели по мере изучения новых возможностей.
 
-Configuring Symfony: Web Interface
+Настройка Symfony: веб-интерфейс
 ----------------------------------
 
-Symfony2 introduces a web interface to configure various aspects regarding the
-website such as database settings. We require a database for this project so
-lets begin using the configurator.
+Symfony2 предоставляет веб-интерфейс для конфигурирования разных составляющих сайта,
+например, баз данных. Для нашего проекта, нам понадобится БД, поэтому давайте попробуем
+её настроить.
 
-Visit ``http://symblog.dev/app_dev.php/`` and click the Configure button. Enter
-the details to setup the database (this tutorial assumes the use of MySQL, but
-you can choose any other database you have access to), followed by generating a
-CSRF token on the next page. You will be presented with the parameter settings
-that Symfony2 has generated. Pay attention to the notice on the page, it is
-likely that your ``app/config/parameters.ini`` file is not writable so you will need to
-copy and paste the settings to the file located at ``app/config/parameters.ini`` (These
-settings can replace the existing settings in this file).
+Зайдите на ``http://symblog.dev/app_dev.php/`` и нажмите кнопку Configure (настройка).
+Заполните необходимые данные (в этом учебнике будем использовать MySQL, хотя вы можете
+выбрать инуюю СУБД). Дальше следует генерация CSRF токена. Обратите внимание, предупреждения
+(notice) могут информаировать о том, что файл ``app/config/parameters.ini`` недоступен
+для записи и вам надо будет вручную скопировать содержимое текстового поля с настройками
+в этот файл: ``app/config/parameters.ini`` (заменив оригинальное содержимое).
 
-
-Bundles: Symfony2 Building Blocks
+Пакеты: Структурные элементы Symfony2
 ----------------------------------
 
-Bundles are the basic building block of any Symfony2 application, in fact the
-Symfony2 framework is itself a bundle. Bundles allow us to separate
-functionality to provide reusable units of code. They encapsulate the entire
-needs to support the bundles purpose including the controllers, the model,
-the templates, and the various resources such as images and CSS. We will create
-a bundle for our website in the namespace Blogger. If you are not familiar with
-namespaces in PHP you should spend some time reading up on them as they are
-heavily used in Symfony2, everything is namespaced. See the
-`Symfony2 autoloader <http://symfony.com/doc/current/cookbook/tools/autoloader.html>`_
-for specific details on how Symfony2 achieves autoloading.
+Пакеты (bundles) являются базовыми структурными элементами приложения на Symfony2.
+По сути, сам фреймворк Symfony2 является пакетом. Пакеты позволяют разделять
+функциональность для обеспечения повторного использования кода. Они инкапсулируют
+всё что необходимо для работы реализованной в них функциональности, включая контроллеры,
+модели, шаблоны и различные ресурсы, вроде изображений и CSS. Мы создадим пакет для
+нашего сайта в пространстве имён (namespace) Blogger. Если вы не знакомы с пространствами имён
+в PHP — потратьте время на их изучение, т.к. в Symfony2 они используются повсеместно.
+Подробности о том, как реализован автозагрузчик можно увидеть на странице
+`Автозагрузчик Symfony2 (англ.) <http://symfony.com/doc/current/cookbook/tools/autoloader.html>`_.
 
 .. tip::
 
-    A good understanding of namespaces can help eliminate common problems you may face
-    when folder structures do not correctly map to namespace structures.
+    Хорошее понимание пространств имён может избавить вас от множества распространенных
+    проблем, с которыми вы можете столкнуться, когда структура каталогов не совсем корректно
+    отвечает структуре пространств имён.
 
-Creating the bundle
-~~~~~~~~~~~~~~~~~~~
+Создаем пакет
+~~~~~~~~~~~~~
 
-To encapsulate the functionality for the blog we will create a Blog bundle.
-This will house all the required files and so could easily be dropped into another
-Symfony2 application. Symfony2 provides a number of tasks to assist us when performing common
-operations. One such task is the bundle generator.
+Чтобы инкапсулировать функционал блога нам понадобится создать пакет Blog.
+Он будет содержать все необходимые файлы, так что вы сможете подключить его в
+любой другой проект на Symfony2. В Symfony2 встроен инструмент для работы из
+командной строки, который поможет нам в выполнении многих задач. Одной из таких задач
+является генерация пакета.
 
-To start the bundle generator run the following command. You will be presented
-with a number of prompts that allow you to configure the way the bundle is setup.
-The default for each prompt should be used.
+Чтобы запустить генератор пакетов, запустите следующую команду. Вам будет задано
+несколько вопросов по конфигурации нового пакета. Используйте значения по-умолчанию.
 
 .. code-block:: bash
 
     $ php app/console generate:bundle --namespace=Blogger/BlogBundle --format=yml
 
-Upon completion of the generator Symfony2 will have constructed the basic bundle
-layout. A few important changes need to be noted here.
+По завершению работы генератора, у нас будет готов базовый пакет. Нам надо будет
+сделать несколько изменений.
 
 .. tip::
 
-    You don't have to use the generator tasks that Symfony2 provides, they are simply
-    there to assist you. You could have manually created the Bundle folder structure
-    and files. While it is not mandatory to use the generators, they do provide some benefits
-    such as they are quick to use and perform all tasks required to get the bundle
-    up and running. One such example is registering the bundle.
+    Использование генераторов предоставляемых Symfony2 не обязательно, они созданы для
+    упрощения работы. Вы можете вручную воссоздать структуру пакета со всеми
+    его директориями и файлами. Но всё-таки, несмотря на опциональность использования
+    генераторов, они позволяют также выполнить необходимые операции для получения готового
+    работающего пакета. Одной из таких операций является регистрация пакета.
 
-Registering the bundle
-......................
+Регистрация пакета
+..................
 
-Our new bundle ``BloggerBlogBundle`` has been registered in the Kernel located at
-``app/AppKernel.php``. Symfony2 requires us to register all bundles that the application
-needs to use. You will also notice that some bundles are only registered when in
-the ``dev`` or ``test`` environments. Loading these bundles in the ``prod``
-(production) environment would introduce additional overhead for functionality
-that wouldn't be used. The snippet below shows how the ``BloggerBlogBundle`` has
-been registered.
+Наш новый пакет ``BloggerBlogBundle`` был зарегистрирован в ядре (Kernel), находящемся
+в ``app/AppKernel.php``. Symfony2 требует регистрации всех пакетов, которые будут
+использоваться в приложении. Может вы уже обратили внимание на то, что некоторые пакты
+зарегистрированы только для ``dev`` или ``test`` окружения. Загрузка этих пакетов для
+рабочего (production) ``prod`` окружения будет создавать лишнюю нагрузку обеспечивая
+работу функций, которые там не будут использоваться. Код ниже показывает, где был зарегистрирован
+наш пакет ``BloggerBlogBundle``.
 
 .. code-block:: php
 
@@ -218,11 +205,10 @@ been registered.
         // ..
     }
 
-Routing
-.......
+Маршрутизация
+.............
 
-The bundle routing has been imported into the applications main
-routing file located at ``app/config/routing.yml``.
+Маршруты пакеты были импортированы в основной файл маршрутов приложения ``app/config/routing.yml``.
 
 .. code-block:: yaml
 
@@ -231,36 +217,34 @@ routing file located at ``app/config/routing.yml``.
         resource: "@BloggerBlogBundle/Resources/config/routing.yml"
         prefix:   /
 
-The prefix option allows us to mount the entire ``BloggerBlogBundle`` routing
-with a prefix. In our case we have opted to mount at the default which is ``/``.
-If for example you would like all routes to be prefixed with ``/blogger`` change
-the prefix to ``prefix: /blogger``.
+Параметр prefix (префикс) позволяет нам установить префикс для всех маршрутов пакета.
+В нашем случае, мы оставим значение по-умолчанию ``/``.
+Если вы захотите, чтобы все маршруты нашего блога начинались с ``/blogger`` — измените
+параметр на ``prefix: /blogger``.
 
-Default structure
-.................
+Структура по-умолчанию
+......................
 
-Under the ``src`` directory the default bundle layout has been created. This
-starts at the top level with the ``Blogger`` folder which maps directly to
-the ``Blogger`` namespace we have created our bundle in. Under this we have the
-``BlogBundle`` folder which contains the actual bundle. The contents of this folder
-will be examined as we work through the tutorial. If your familiar with MVC
-frameworks, some of the folders will be self explanatory.
+В директории ``src`` был воссоздана стандартная структура пакета. В самом верху
+находится директория ``Blogger``, указывающая конкретно на пространство имён
+``Blogger``, в котором мы создали пакет. Ниже у нас находится папка ``BlogBundle``,
+в которой находится сам пакет. Мы рассмотрим её содержимое в процессе прохождения
+учебника. Если вы знакомы с MVC фреймворками, то назначение некоторых подпапок
+будет для вас понятно уже из названия.
 
-The Default Controller
-~~~~~~~~~~~~~~~~~~~~~~
+Контроллер по-умолчанию
+~~~~~~~~~~~~~~~~~~~~~~~
 
-As part of the bundle generator, Symfony2 has created a default controller. We
-can run this controller by going to
-``http://symblog.dev/app_dev.php/hello/symblog``. You should see a simple
-greeting page. Try changing the ``symblog`` part of the URL to your name.
-We can examine at a high level how this page was generated.
+В прцоессе генерирования пакета, Symfony2 создала контроллер по-умолчанию. Мы можем
+запустить его, перейдя по пути ``http://symblog.dev/app_dev.php/hello/symblog``. Там
+вы увидите простенькую страничку приветствия. Попробуйте изменить ``symblog`` в URL'е
+на своё имя. Посмотрим, как это реализовано.
 
-Routed
-......
+Маршруты
+........
 
-The ``BloggerBlogBundle`` routing file located at
-``src/Blogger/BlogBundle/Resources/config/routing.yml`` contains the following
-routing rule.
+Файлом маршрутизации ``BloggerBlogBundle`` является ``src/Blogger/BlogBundle/Resources/config/routing.yml``,
+который содержит следующее правило.
 
 .. code-block:: yaml
 
@@ -269,40 +253,33 @@ routing rule.
         pattern:  /hello/{name}
         defaults: { _controller: BloggerBlogBundle:Default:index }
 
-The routing is composed of a pattern and a some default options. The pattern is
-checked against the URL, and the default options specify the controller to
-execute if the route matches. In the pattern ``/hello/{name}``, the ``{name}``
-placeholder will match any value as no specific requirements have been set. The
-route also doesn't specify any culture, format or HTTP methods. As no HTTP
-methods have been set, requests from GET, POST, PUT, etc will all be eligible
-for pattern matching.
+Маршрут состоит из шаблона и каких-то стандартных для него значений. Шаблон сверяется
+с URL'ом, а значения по-умолчанию указывают какой из контроллеров должен сработать,
+если правила маршрута были удовлетворены. В шаблоне ``/hello/{name}``, плейсхолдер (placeholder)
+``{name}}`` соответствует любому значению, т.к. никаких требований для него не указано.
+Также, в маршруте не указано требований относительно локали, формата и HTTP методов, поэтому
+запросы GET, POST, PUT и т.д. будут удовлетворять шаблону.
 
-If the route meets all the specified criteria it will be executed by the
-_controller option in defaults. The _controller option specifies the
-Logical Name of the controller which allows Symfony2 to map this to a specific file.
-The above example will cause the ``index`` action in the ``Default`` controller
-located at ``src/Blogger/BlogBundle/Controller/DefaultController.php`` to be executed.
+Если маршрут полсностью соответствует требованиям, он будет выполнен контроллером, указанным
+в параметре _controller. Этот параметр ссылается на логическое имя (Logical Name) контроллера,
+что позволяет Symfony2 найти подходящий файл. Пример выше выполнит действие (action) ``index``
+контроллера ``Default``, находящегося по адресу ``src/Blogger/BlogBundle/Controller/DefaultController.php``.
 
-The Controller
-..............
+Контроллер
+..........
 
-The controller in this example is very simple. The ``DefaultController`` class
-extends the ``Controller`` class which provides some helpful methods such as the ``render``
-method used below. As our route defines a placeholder it is passed into the
-action as the argument ``$name``. The action does nothing more than
-call the ``render`` method specifying the ``index.html.twig`` template
-in the ``BloggerBlogBundle`` Default view folder to be rendered. The
-format of the template name is ``bundle:controller:template``. In
-our example this is ``BloggerBlogBundle:Default:index.html.twig``
-which maps to the ``index.html.twig`` template, in the ``Default``
-views folder of the ``BloggerBlogBundle``, or physically to the file
-``src/Blogger/BlogBundle/Resources/views/Default/index.html.twig``. Different
-variations of the template format can be used to render templates
-at different locations within the application and its bundles. We will see
-this later in the chapter.
+Контроллер в нашем примере совсем простой. Класс ``DefaultController`` наследуется от ``Controller``,
+в котором реализованы некоторые полезные методы, например, ``render``, используемый ниже. Поскольку
+наш маршрут использует плейсхолдер, то его значение будет передано как аргумент ``$name``. В
+действии ``index`` вызывается только отвечающий за вывод шаблона метод ``render`` с указанием файла
+``index.html.twig`` в подпапке Default папки с шаблонами view нашего пакета ``BloggerBlogBundle``.
+Путь к шаблону указан в формате ``пакет:контроллер:шаблон``. В нашем примере, это будет
+``BloggerBlogBundle:Default:index.html.twig``, который указывает на файл, физически
+расположенный по адресу ``src/Blogger/BlogBundle/Resources/views/Default/index.html.twig``.
+Различные вариации формата применяется для указания на шаблоны, находящиеся в разных частях
+нашего приложения. Об этом еще будет написано.
 
-We also pass over the ``$name`` variable to the template via the ``array``
-options.
+В массиве мы передаем переменную ``$name`` в наш шаблон.
 
 .. code-block:: php
 
@@ -321,55 +298,51 @@ options.
         }
     }
 
-The Template (The View)
+Шаблон (отображение)
 .......................
 
-As you can see the template is very simple. It prints out Hello followed
-by the name argument passed over from the controller.
+Как вы могли уже заметить, шаблон очень простой. Он выводит Hello и добавляет
+значение аргумента переданного из контроллера.
 
 .. code-block:: html
 
     {# src/Blogger/BlogBundle/Resources/views/Default/index.html.twig #}
     Hello {{ name }}!
 
-Cleaning up
-~~~~~~~~~~~
+Наводим порядок
+~~~~~~~~~~~~~~~
 
-As we don't need some of the default files created by the generator we can clean
-these up.
+Так как нам не нужны некоторые файлы созданные генератором, мы их удалим.
 
-The controller file ``src/Blogger/BlogBundle/Controller/DefaultController.php``
-can be deleted, along with the view folder and its content at
-``src/Blogger/BlogBundle/Resources/views/Default/``. Finally remove the route
-defined at ``src/Blogger/BlogBundle/Resources/config/routing.yml``
+Начем с удаления контроллера ``src/Blogger/BlogBundle/Controller/DefaultController.php``
+вместе с его его директорией, где хранятся его шаблоны ``src/Blogger/BlogBundle/Resources/views/Default/``.
+Наконец, удалите маршруты описанные в ``src/Blogger/BlogBundle/Resources/config/routing.yml``
 
-Templating
-----------
+Шаблонизация
+------------
 
-We have 2 options by default when using Symfony2 for templating;
-`Twig <http://www.twig-project.org/>`_ and PHP. You could of course use neither of
-these and opt for a different library. This is possible thanks to Symfony2
-`Dependency Injection Container <http://symfony.com/doc/current/book/service_container.html>`_.
-We will be using Twig as our templating engine for a number of reasons.
+У нас есть два стандартных решения для шаблонизации в Syfmony2;
+`Twig <http://www.twig-project.org/>`_ и PHP. Конечно, вы можете не использовать
+ни один из них, а подключить какой-то другой шаблонизатор. Что возможно благодаря
+`Dependency Injection Container <http://symfony.com/doc/current/book/service_container.html>`_ Symfony2.
+Мы же будем использовать Twig по нескольким причинам.
 
-1. Twig is fast - Twig templates compile down to PHP classes so there is very little
-   overhead to use Twig templates.
-2. Twig is concise - Twig allows us to perform templating functionality in very little
-   code. Compare this to PHP where some statements become very verbose.
-3. Twig supports template inheritance - This is one of my personal favorites.
-   Templates have the ability to extend and override other templates allowing children
-   templates to change the defaults provided by their parents.
-4. Twig is secure - Twig has output escaping enabled by default and even provides a sand
-   boxed environment for imported templates.
-5. Twig is extensible - Twig comes will a lot of common core functionality that
+1. Twig быстрый - шаблоны Twig компилируются в PHP классы, обеспечивая совсем небольшую нагрузку.
+2. Twig краткий - Twig позволяет выполнять многие операции, без лишней многословности, в отличии от PHP.
+3. Twig поддерживает наследование шаблонов - это моё любимое. Шаблоны могут расширяться и переопределять
+   другие шаблоны, позволяя дочерним шаблонам менять стандартные значения предоставленные родителями.
+4. Twig безопасный - в Twig по-умолчанию включено экранирование вывода. Более того, там реализована
+   песочница для импортированных шаблонов.
+5. Twig расширяемый - Twig идёт с боольшим числом основных функций, которые вы можете ожидать от
+   шалонизатора, но на случай, когда вам понадобится что-то  comes will a lot of common core functionality that
    you'd expected from a templating engine, but for those occasions where you need
-   some extra bespoke functionality, Twig can be easily extended.
+   some extra специфичное, Twig может быть легко расширен.
 
-These are just some of the benefits of Twig. For more reasons why you should use
-Twig see the official `Twig <http://www.twig-project.org/>`_ site.
+Это только некоторые преимщуества Twig'а. Больше причин его использования вы можете найти на официальном
+сайте `Twig <http://www.twig-project.org/>`_.
 
-Layout Structure
-~~~~~~~~~~~~~~~~
+Структура разметки
+~~~~~~~~~~~~~~~~~~
 
 As Twig supports template inheritance, we are going to use the
 `Three level inheritance <http://symfony.com/doc/current/book/templating.html#three-level-inheritance>`_
