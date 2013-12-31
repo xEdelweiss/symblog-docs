@@ -344,17 +344,17 @@ Symfony2 предоставляет веб-интерфейс для конфи�
 Структура разметки
 ~~~~~~~~~~~~~~~~~~
 
-As Twig supports template inheritance, we are going to use the
-`Three level inheritance <http://symfony.com/doc/current/book/templating.html#three-level-inheritance>`_
-approach. This approach allows us to modify the view at 3 distinct levels within the
-application, giving us plenty of room for customisations.
+Поскольку Twig поддерживает наследование шаблонов, мы будем использовать
+`трех-уровневую схему наследования <http://symfony.com/doc/current/book/templating.html#three-level-inheritance>`_.
+Это позволит нам вносить изменения на трех отдельных уровнях, что 
+гарантирует большой простор для творчества.
 
-Main Template - Level 1
+Главный шаблон - Уровень 1
 .......................
 
-Lets start by creating our basic block level template for symblog. We need 2
-files here, the template and the CSS. As Symfony2 supports
-`HTML5 <http://diveintohtml5.org/>`_ we will also be using it.
+Давайте начнем с создание базвого шаблона для нашего блога. Будем его называть
+шаблоном уровня приложения. Чтобы это сделать, нам надо 2 файла: шаблон и CSS. 
+Так как Symfony2 поддерживает `HTML5 <http://diveintohtml5.org/>`_, мы будем использовать и его. 
 
 .. code-block:: html
 
@@ -416,24 +416,25 @@ files here, the template and the CSS. As Symfony2 supports
 
 .. note::
 
+    Тут вы можете увидеть 3 подключенных в шаблон файла: 1 JavaScript и 2 CSS.
+    JavaScript-файл дополняет поддержку HTML5 браузерами IE ниже 9 версии. 
+    Два CSS-файла импортируют шрифты с 
     There are 3 external files pulled into the template, 1 JavaScript and 2 CSS.
     The JavaScript file fixes the lack of HTML5 support in IE browsers pre version
-    9. The 2 CSS files import fonts from
-    `Google Web font <http://www.google.com/webfonts>`_.
+    9. The 2 CSS files import fonts from `Google Web font <http://www.google.com/webfonts>`_.
 
-This template marks up the main structure of our blogging website. Most
-of the template consists of HTML, with the odd Twig directive. Its these
-Twig directives that we will examine now.
+В этом шаблоне описывается основная структура нашего сайта. Большинство
+шаблонов состоят из HTML с примесью Twig директив. Сейчас мы их рассмотрим.
 
-We will start by focusing on the document HEAD. Lets look at the title:
+Начнем с секции HEAD. Посмотрите на title:
 
 .. code-block:: html
 
     <title>{% block title %}symblog{% endblock %} - symblog</title>
 
-The first thing you'll notice is the alien ``{%`` tag. Its not HTML, and its
-definitely not PHP. This is one of the 3 Twig tags. This tag is the Twig
-``Do something`` tag. It is used to execute statements such as control statements and
+Первое, что вы, скорее всего, заметите — чужеродный тег ``{%``. Это не HTML
+и, определенно, не PHP. Это один из 3 тегов Twig. Его можно описать как 
+тег ``Сделай что-то``. It is used to execute statements such as control statements and
 for defining block elements. A full list of
 `control structures <http://www.twig-project.org/doc/templates.html#list-of-control-structures>`_
 can be found in the Twig Documentation. The Twig block we have defined in the
@@ -449,52 +450,52 @@ blog. We can achieve this by extending the template and overriding the title blo
 
     {% block title %}The blog title goes here{% endblock %}
 
-In the above example we have extended the applications base template that first
-defined the title block. You'll notice the template format used with the
-``extends`` directive is missing the ``Bundle`` and the ``Controller`` parts,
-remember the template format is ``bundle:controller:template``. By excluding the
-``Bundle`` and the ``Controller`` parts we are specifiying the use of the application
-level templates defined at ``app/Resources/views/``.
+В примере выше, мы расширили основной шаблон приложения, в котором был описан
+блок заголовка. Вы могли обратить внимание на формат, в котором был записана
+ссылка на шаблон в директиве ``extends``, а именно, на отсутствие частей ``Пакет`` и
+``Контроллер``. Напомню, путь к шаблону описывается так: ``пакет:контроллер:шаблон``.
+Исключив первые две части, мы говорим, что нам нужен шаблон уровня приложения,
+находящегося в ``app/Resources/views/``.
 
-Next we have defined another title block and put in some
-content, in this case the blog title. As the parent template already
-contains a title block, it is overridden by our new one. The title would now
-output as 'The blog title goes here - symblog'. This functionality provided by
-Twig will be used extensively when creating templates.
+Дальше, мы определили другой блок заголовка и добавили в него содержимое, в нашем
+случае, название блога. Поскольку, родительский шаблон уже содержит блок заголовка, 
+он будет перезаписан новым. Теперь заголовок будет содержать строку
+'The blog title goes here - symblog'. Мы будем активно использовать эту возможность
+Twig при создании шаблонов.
 
-In the stylesheets block we are introduced to the next Twig tag, the ``{{`` tag,
-or the ``Say something`` tag.
+В блоке описания стилей мы использовали новый Twig-тег ``{{``. Или тег 
+``Выведи что-то``.
 
 .. code-block:: html
 
     <link href="{{ asset('css/screen.css') }}" type="text/css" rel="stylesheet" />
 
-This tag is used to print the value of variable or expression. In the above example
-it prints out the return value of the ``asset`` function, which provides us with
-a portable way to link to the application assets, such as CSS, JavaScript, and images.
+Этот тего используется для вывода значений переменных или выражений. В примере выше
+он выводит значение, полученное от функции ``asset``, которая предоставляет нам
+возможность ссылаться к ресурсам приложения, вроде CSS, Javascript или изображений, 
+без жесткой привязки к их местоположению.
 
-The ``{{`` tag can also be combined with filters to manipulate the output before
-printing.
+Тег ``{{`` так же может использоваться вместе с фильтрами для обработки результата
+перед выводом.
 
 .. code-block:: html
 
     {{ blog.created|date("d-m-Y") }}
 
-For a full list of filters check the
-`Twig Documentation <http://www.twig-project.org/doc/templates.html#list-of-built-in-filters>`_.
+Полный список фильтров можете посмотреть в `Документации к Twig<http://www.twig-project.org/doc/templates.html#list-of-built-in-filters>`_.
 
-The last Twig tag, which we have not seen in the templates is the comment tag ``{#``.
-Its usage is as follows:
+Последний тег Twig, который мы еще не видели, это тег комментариев ``{#``.
+Используется так:
 
 .. code-block:: html
 
     {# The quick brown fox jumps over the lazy dog #}
 
-No other concepts are introduced in this template. It provides the main
-layout ready for us to customise it as we need.
+Больше в этом шаблоне никаких понятий не вводится. Он предоставляет главный
+шаблон, готовый к настройке.
 
-Next lets add some styles. Create a stylesheet at ``web/css/screen.css`` and add
-the following content. This will add styles for the main template.
+Теперь давайте добавим стилей. Создадим CSS-файл ``web/css/screen.css`` и добавим
+следующий контент. Это стили для главного шаблона.
 
 .. code-block:: css
 
