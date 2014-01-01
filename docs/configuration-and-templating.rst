@@ -528,12 +528,12 @@ Twig при создании шаблонов.
 
     #footer { border-top: 1px solid #ccc; clear: both; text-align: center; padding: 10px; color: #aaa; }
 
-Bundle Template - Level 2
+Шаблон пакета - Уровень 2
 .........................
 
-We now move onto creating the layout for the Blog bundle. Create a file located at
-``src/Blogger/BlogBundle/Resources/views/layout.html.twig`` and add the
-following content.
+Переходим к созданию шаблона для пакета Блог. Создайте файл по адресу
+``src/Blogger/BlogBundle/Resources/views/layout.html.twig`` и добавьте
+такое содержимое.
 
 .. code-block:: html
 
@@ -544,32 +544,29 @@ following content.
         Sidebar content
     {% endblock %}
 
-At a first glance this template may seem a little simple, but its simplicity is
-the key. Firstly it extends the applications base template that we created earlier.
-Secondly it overrides the parent sidebar block with some dummy content. As the
-sidebar will be present on all pages of our blog it makes sense to perform the
-customisation at this level. You may ask why don't we just put the customisation
-in the application template as it will be present on all pages. This is simple,
-the application knows nothing about the Bundle and shouldn't. The Bundle should
-self contain all its functionality and rendering the sidebar is part of this
-functionality. OK, so why don't we just place the sidebar in each of the page
-templates? Again this is simple, we would have to duplicate the sidebar each
-time we added a page. Further this level 2 template gives us the flexibility in
-the future to add other customisations that all children templates will inherit.
-For example, we may want to change the footer copy on all pages, this would be a
-great place to do this.
+По началу этот шаблон может выглядеть слишком простым, но его простота - его плюс.
+Сначала мы расширяем базовый шаблон, созданный раньшею Потом переопределили родительский
+блок сайдбара и заполнили его текстом-заглушкой. Поскольку сайдбар отображается
+на всех страницах нашего блога, есть смысл выполнять его настройку на этом уровне.
+Вы можете спросить, почему не вынести настройки на уровень приложения, ведь он тоже
+доступен со всех страниц. Очень просто — приложение о пакете ничего не знает и не должно.
+Пакет должен содержать весь необходимый ему функционал, и вывод сайдбара относится к нему.
+Хорошо, но почему не заменить сайдбар на каждой странице? И опять всё просто — мы не
+хотим дублировать кодо и, при необходимости, править его на всех страницах. Шаблоны 
+уровня пакета предоставвляют нам большую гибкость для дальнейших модификаций и расширения
+в дочених файлах. Например, мы можем захотеть изменить запись об правах на контент в
+футере на всех страницах и этот уровень ялвяется отличным для изменений местом.
 
-Page Template - Level 3
-.......................
+Шаблон страницы - Уровень 3
+...........................
 
-Finally we are ready for the controller layout. These layouts will commonly be
-related to a controller action, i.e., the blog show action will have a
-blog show template.
+Наконец мы дошли до шаблонов контроллера. Эти шаблоны в основном будут привязаны
+к действию (action) контроллера, например, действие по отображению записей блога.
 
-Lets start by creating the controller for the homepage and its template. As this
-is the first page we are creating we need to create the controller. Create the
-controller at ``src/Blogger/BlogBundle/Controller/PageController.php`` and add
-the following:
+Давайте начнем с создания действия для домашней страницы и шаблона к нему. Так
+как это первая страница, которую мы создаем, нам надо добавить контроллер. Создайте
+его по адресу ``src/Blogger/BlogBundle/Controller/PageController.php`` и впишите
+в него такой код:
 
 .. code-block:: php
 
@@ -588,9 +585,9 @@ the following:
         }
     }
 
-Now create the template for this action. As you can see in the controller action
-we are going to render the Page index template. Create the template at
-``src/Blogger/BlogBundle/Resources/views/Page/index.html.twig``
+Теперь создайте шаблон для этого действия. Как вы можете увидеть в действии 
+контроллера мы отправляем на вывод шаблон index действия Page. Создайте
+файл шаблона ``src/Blogger/BlogBundle/Resources/views/Page/index.html.twig``
 
 .. code-block:: html
 
